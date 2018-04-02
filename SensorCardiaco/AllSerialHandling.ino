@@ -17,14 +17,11 @@ void serialOutput() {  // Decide How To Output Serial.
 //  Decides How To OutPut BPM and IBI Data
 void serialOutputWhenBeatHappens() {
   if (serialVisual == true) {
-    Serial.print("*** Heart-Beat Happened *** ");
-    Serial.print("BPM: ");
     String json = "{\"bpm\":";
     json += BPM;
     json += "}";
-    Genotronex.println(json);
-    Serial.print(BPM);
-    Serial.println();
+    return BPM;
+    
   } else {
     sendDataToSerial('B', BPM);
     sendDataToSerial('Q', IBI);
