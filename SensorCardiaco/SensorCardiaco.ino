@@ -1,6 +1,7 @@
 #include <SoftwareSerial.h>
 
-SoftwareSerial bluetooth(12,11);
+SoftwareSerial bluetooth(12, 11);
+int ledpin = 12;
 
 //  Variables
 int pulsePin = 0;                 // Pulse Sensor purple wire connected to analog pin 0
@@ -22,43 +23,29 @@ static boolean serialVisual = true;   // Set to 'false' by Default.  Re-set to '
 
 
 void setup() {
-  bluetooth.begin(9600);
-  Serial.begin(9600);             // we agree to talk fast!
-  interruptSetup();                 // sets up to read Pulse Sensor signal every 2mS
-}
+  pinMode(blinkPin, OUTPUT);
+  pinMode(fadePin, OUTPUT);
+  Serial.begin(115200);
+  interruptSetup();
 
+  bluetooth.begin(9600);
+  Serial.begin(9600);
+  pinMode(ledpin, OUTPUT);
+  Serial.println("Inicio");
+}
 
 //  Where the Magic Happens
 void loop() {
   serialOutput();
 
-  conteudo = "";
-  if (bluetooth.available()) {
-    conteudo = "";
-    while(bluetooth.available()) {
-      char caracter = bluetooth.read();
-
-      conteudo += caracter;
-      delay(10);
-    }
-
-    Serial.println("Recebido: " + conteudo);
-
-    if (conteudo.indexOf("COMUNICACAO") >= 0) {
-      bluetooth.println("{");
-      bluetooth.println("SUCCESS");
-      bluetooth.println("}");
-    }
-    if (conteudo.indexOf("ENVIAR") >= 0) {
-      valor = BPM;
-      Serial.println("passou");
-      bluetooth.println("{");
-      bluetooth.println(valor);
-      bluetooth.println("}");
-      
-      valor += 10;
-      delay(500);
-    }
-    conteudo = "";
+  if (QS == true) {    // Foi encontrada uma pulsação
+    digitalWrite(blinkPin, HIGH);
+    fadeRate = 255;
+    serialOutputWhenBeatHappens();
+    QS = false;
   }
+  else {
+    digitalWrite(blinkPin, LOW);
+  }
+  delay(20);
 }

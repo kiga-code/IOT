@@ -17,10 +17,12 @@ void serialOutput() {  // Decide How To Output Serial.
 //  Decides How To OutPut BPM and IBI Data
 void serialOutputWhenBeatHappens() {
   if (serialVisual == true) {
-    String json = "{\"bpm\":";
+    String json = "{";
     json += BPM;
     json += "}";
-    return BPM;
+    bluetooth.println(json);
+    Serial.print(BPM);
+    Serial.println();
     
   } else {
     sendDataToSerial('B', BPM);
@@ -29,17 +31,11 @@ void serialOutputWhenBeatHappens() {
 }
 
 
-
-
 void sendDataToSerial(char symbol, int data ) {
   Serial.print(symbol);
 
   Serial.println(data);
 }
-
-
-
-
 
 void ledFadeToBeat() {
   fadeRate -= 15;
